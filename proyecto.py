@@ -61,7 +61,7 @@ def consultar(con):
     cadena='SELECT count(*) FROM atleta'
     CursorObj.execute(cadena)
     cantidad = CursorObj.fetchall()
-    print(type(cantidad[0]))
+    print(cantidad[0])
     for row in cantidad:
         cantidadatletas=row[0]
         
@@ -75,19 +75,51 @@ def consultar(con):
 def actualizar_atleta(con):
     CursorObj=con.cursor()
     NoInscripcion = input("NoInscripcion: ")
-    nombre = input("Nombre: ")
-    apellido = input("Apellido: ")
-    cadena=f'UPDATE atleta SET nombre = "{nombre}", apellido = "{apellido}" WHERE NoInscripcion LIKE "{NoInscripcion}%"'
+    Nombre = input("Nombre: ")
+    Apellido = input("Apellido: ")
+    cadena=f'UPDATE atleta SET Nombre = "{Nombre}", Apellido = "{Apellido}" WHERE NoInscripcion LIKE "{NoInscripcion}%"'
     CursorObj.execute(cadena)
-    print(cadena)
     con.commit()
-    
+def borrar_info_atleta(con):
+    CursorObj=con.cursor()
+    Nombre = input("Nombre: ")
+    cadena=f'DELETE FROM atleta WHERE Nombre LIKE "{Nombre}%"'
+    CursorObj.execute(cadena)
+    con.commit()
+def borrar_tabla(con):
+    CursorObj=con.cursor()
+    cadena=f'DROP TABLE atelta'
+    CursorObj.execute(cadena)
+    con.commit()    
+                 
+def menu_atleta(con):
+    CursorObj=con.cursor()
+    cadena="""
+Digite 1 para ingresar atleta
+Digite 2 para consultar atleta
+Digite 3 para actualizar atleta
+Digite 4 para borrar atleta
+
+"""
+    entrada=input(cadena)
+    entrada=int(entrada)
+    if entrada==1:
+        atletacreado=ingresar()
+        insertar_tabla_atleta(con, atletacreado)
+    elif entrada==2:
+        consultar(con)
+    elif entrada==3:
+        actualizar_atleta(con)
+    elif entrada==4:
+        borrar_info_atleta(con)
+    con.commit()    
+def cerrarConexionBD(con):
+    con.close()
 def main():
     conex=conexion_db()
-    crear_tabla_atleta(conex)
-    #atletacreado=ingresar()
-    #insertar_tabla_atleta(conex, atletacreado)
-    #consultar_atleta(conex)
-    #consultar(conex)
-    actualizar_atleta(conex)
+    #crear_tabla_atleta(conex)
+    menu_atleta(conex)
+    #borrar_info_atleta(conex)
+    #borrar_tabla(conex)
+    cerrarConexionBD(conex)
 main()
